@@ -1,6 +1,6 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import NextAuth, { AuthOptions } from "next-auth";
-import axios from "axios";
+import { authService } from "@/services/auth";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -19,28 +19,28 @@ export const authOptions: AuthOptions = {
         password: { label: "password", type: "password", placeholder: "jsmith" },
       },
       async authorize(credentials:any,req) {
-        console.info('credentials**',credentials)
-        const respon = await axios.post(
-          "http://apiqlsxthuoc.blueskytech.vn/api/Auth/login",
-          {
-            username: credentials.username,
-            password: credentials.password
-          }
-        );
+        const responseAuth = await authService.login({
+          username: credentials.username,
+          password: credentials.password
+        })
+        console.info('responseAuth===>', responseAuth)
+        console.info('isSuccess===>', responseAuth?.success)
           const user = { id: "1", name: "J Smith", email: "jsmith@example.com" }
-          if(respon.data.Success){
+          if(responseAuth.Success){
             return user;
           }else{
-            throw new Error('Password not correct!');
+            alert('login fail!')
+            console.log('Password not correct!')
+            // throw new Error('Password not correct!');
           }
       },
     }),
   ],
-  // debug: process.env.NODE_ENV === 'development',
-  // session:{
-  //     strategy:'jwt',
-  // },
-  // secret: process.env.NEXTAUTH_SECRET
+  debug: process.env.NODE_ENV === 'development',
+  session:{
+      strategy:'jwt',
+  },
+  secret: process.env.NEXTAUTH_SECRET
 };
 const handler = NextAuth(authOptions);
 

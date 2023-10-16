@@ -9,6 +9,7 @@ import {
   FormMessage,
 } from "@/components/form";
 import { Input } from "@/components/input";
+import { config } from "@/constant/config";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn, useSession } from "next-auth/react";
@@ -59,7 +60,6 @@ const login = () => {
 
   useEffect(() => {
     if(session?.status === 'authenticated'){
-      console.info('session', session)
       route.push('/user')
     }
   }, [session?.status, route]);
@@ -90,7 +90,7 @@ const login = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Vui lòng nhập password" {...field} />
+                  <Input placeholder="Vui lòng nhập password" {...field} type="password"/>
                 </FormControl>
                 <FormMessage />
               </FormItem>
